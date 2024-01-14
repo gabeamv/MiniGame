@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- @+id/tic_tac_toe_button_x, @+id/tic_tac_toe_button_o -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center">
+
+            <Button
+                android:layout_width="175dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/x"
+                android:textSize="60sp"
+                android:id="@+id/tic_tac_toe_button_x"/>
+
+            <Button
+                android:layout_width="175dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="12dp"
+                android:text="@string/o"
+                android:textSize="60sp"
+                android:id="@+id/tic_tac_toe_button_o"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

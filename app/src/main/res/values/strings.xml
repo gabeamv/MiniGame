@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MiniGame</string>
+    <string name="hello_world">Hello World</string>
+    <string name="title_tic_tac_toe">Tic Tac Toe</string>
+    <string name="title_home">Home</string>
+    <string name="x">X</string>
+    <string name="o">O</string>
+    <string name="test">Test</string>
+    <string name="tic_tac_toe_top_left">Top-left box.</string>
+    <string name="tic_tac_toe_top_middle">Top-middle box.</string>
+    <string name="tic_tac_toe_top_right">Top-right box.</string>
+    <string name="tic_tac_toe_middle_left">Middle-left box.</string>
+    <string name="tic_tac_toe_middle">Middle box.</string>
+    <string name="tic_tac_toe_middle_right">Middle-right box.</string>
+    <string name="tic_tac_toe_bottom_left">Bottom-left box.</string>
+    <string name="tic_tac_toe_bottom_middle">Bottom box.</string>
+    <string name="tic_tac_toe_bottom_right">Bottom-right box.</string>
+    <string name="reset_board_test">reset_board_test</string>
+</resources>
