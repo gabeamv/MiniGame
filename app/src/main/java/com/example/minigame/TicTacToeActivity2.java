@@ -39,7 +39,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         // We set the content view to the Tic-tac-toe game.
         setContentView(R.layout.layout_tic_tac_toe);
         // We create two buttons for the user to choose what they want to play, X or O.
-        Button buttonChooseX = (Button) findViewById(R.id.tic_tac_toe_button_x);
+        Button buttonChooseX = findViewById(R.id.tic_tac_toe_button_x);
         Button buttonChooseO = (Button) findViewById(R.id.tic_tac_toe_button_o);
 
         // Handles the buttons that will determine whether the user plays X or O.
@@ -115,11 +115,12 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                     if (computerType == TIC_TAC_TOE_X) computerButton.setBackgroundResource(R.drawable.tic_tac_toe_x);
                     else if (computerType == TIC_TAC_TOE_O) computerButton.setBackgroundResource(R.drawable.tic_tac_toe_o);
 
-                    // Enable user input on the board again.
-                    enableAllBoardInput();
+                    // Enabled the board buttons that are still in play.
+                    enableUnusedBoardInput();
 
-                    // Check if there is a winner by invoking pickWinner.
-                    if (checkWinner() != TIC_TAC_TOE_EMPTY_SPACE) resetBoard();
+                    // Check if there is a winner by invoking checkWinner. If there is a winner, checkWinner
+                    // will not return 0.
+                    if (checkWinner() != 0) resetBoard();
                 }
             };
 
@@ -187,6 +188,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                     playerButton = bottomRight;
                 }
 
+
                 // Method for player to draw on the board.
                 // delayHandler.postDelayed(playerMove, 0);
                 // Depending on whether the player chose their play type as X or O, we change
@@ -198,8 +200,8 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                     playerButton.setBackgroundResource(R.drawable.tic_tac_toe_o);
                 }
 
-                // Check if there is a winner.
-                if (checkWinner() != TIC_TAC_TOE_EMPTY_SPACE) {
+                // Check if there is a winner. If there is a winner, reset the board, and the onClick method terminates.
+                if (checkWinner() != 0) {
                     resetBoard();
                     return;
                 }
@@ -220,12 +222,11 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                 // Select a random index of the board that is empty. https://www.baeldung.com/java-generating-random-numbers-in-range
                 int randomIndexEmptyBox = (int) (Math.random() * emptyBoxIndexes.size());
                 int randomBoardIndex = emptyBoxIndexes.get(randomIndexEmptyBox);
+
                 // Update the array board.
                 board[randomBoardIndex] = computerType;
 
                 // Get the computer box.
-                // Initialize button variable.
-                computerButton = new ImageButton(TicTacToeActivity2.this);
                 // Get the correct reference based off of the random position.
                 // TODO: Plan on making into method for cleaner look.
                 if (randomBoardIndex == 0) {
@@ -247,6 +248,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                 } else if (randomBoardIndex == 8) {
                     computerButton = bottomRight;
                 }
+
 
                 // TODO: https://www.w3docs.com/snippets/java/how-to-call-a-method-after-a-delay-in-android.html#:~:text=To%20call%20a%20method%20after%20a%20delay%20in%20Android%2C%20you,Runnable%20after%20the%20specified%20delay.
                 // Method for computer to draw on the board. This method will also enable board buttons.
@@ -310,8 +312,8 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         // Win from the bottom left to top right diagonal.
         if (board[6] == board[4] && board[4] == board[2] && board[6] != TIC_TAC_TOE_EMPTY_SPACE) return board[6];
 
-        // Return that there is no winner.
-        return TIC_TAC_TOE_EMPTY_SPACE;
+        // Return that there is no winner (0).
+        return 0;
     }
 
     // Check if board is full by iterating through board.
@@ -352,4 +354,23 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         bottomMiddle.setEnabled(true);
         bottomRight.setEnabled(true);
     }
+
+    // Method to only enable the buttons that were not pressed.
+    private void enableUnusedBoardInput() {
+        // If there is an empty space in the board array, we enable the button for that corresponding index.
+        if (board[0] == TIC_TAC_TOE_EMPTY_SPACE) topLeft.setEnabled(true);
+        if (board[1] == TIC_TAC_TOE_EMPTY_SPACE) topMiddle.setEnabled(true);
+        if (board[2] == TIC_TAC_TOE_EMPTY_SPACE) topRight.setEnabled(true);
+        if (board[3] == TIC_TAC_TOE_EMPTY_SPACE) middleLeft.setEnabled(true);
+        if (board[4] == TIC_TAC_TOE_EMPTY_SPACE) middle.setEnabled(true);
+        if (board[5] == TIC_TAC_TOE_EMPTY_SPACE) middleRight.setEnabled(true);
+        if (board[6] == TIC_TAC_TOE_EMPTY_SPACE) bottomLeft.setEnabled(true);
+        if (board[7] == TIC_TAC_TOE_EMPTY_SPACE) bottomMiddle.setEnabled(true);
+        if (board[8] == TIC_TAC_TOE_EMPTY_SPACE) bottomRight.setEnabled(true);
+    }
+
+
+
+
+
 }
