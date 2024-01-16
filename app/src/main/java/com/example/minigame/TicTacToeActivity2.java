@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,7 @@ import android.os.Handler;
 
 public class TicTacToeActivity2 extends AppCompatActivity {
     // Constant indicating empty space on board.
-    static final int TIC_TAC_TOE_EMPTY_SPACE = 0;
+    static final int TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER = 0;
     // Constants indicating player.
     static final int TIC_TAC_TOE_X = 1;
     static final int TIC_TAC_TOE_O = 2;
@@ -26,7 +27,9 @@ public class TicTacToeActivity2 extends AppCompatActivity {
     // Test button to reset the board.
     private Button resetBoardButtonTest;
 
-    // Stores the board of the tic-tac-toe game.
+    // Stores the board of the tic-tac-toe game. From left to right, top to bottom, the board boxes
+    // where the Xs and Os will go will be 0 indexed. For instance,  the top left position will be
+    // at index 0 and the bottom right position will be at index 8.
     private int[] board;
 
     // Stores the player type of the player and computer.
@@ -120,7 +123,12 @@ public class TicTacToeActivity2 extends AppCompatActivity {
 
                     // Check if there is a winner by invoking checkWinner. If there is a winner, checkWinner
                     // will not return 0.
-                    if (checkWinner() != 0) resetBoard();
+                    if (checkWinner() != 0) {
+                        // Update the winner's score. Check winner returns the int value of player type. 0 if no winner.
+                        updateWinnerScore(checkWinner());
+                        // Reset the board.
+                        resetBoard();
+                    }
                 }
             };
 
@@ -202,6 +210,8 @@ public class TicTacToeActivity2 extends AppCompatActivity {
 
                 // Check if there is a winner. If there is a winner, reset the board, and the onClick method terminates.
                 if (checkWinner() != 0) {
+                    // Update the winner's score. Check winner returns the int value of player type. 0 if no winner.
+                    updateWinnerScore(checkWinner());
                     resetBoard();
                     return;
                 }
@@ -218,7 +228,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                 // ArrayList to hold the empty positions from the board.
                 ArrayList<Integer> emptyBoxIndexes = new ArrayList<Integer>();
                 // Iterate through the array board. If the space of the board is empty, add the index to the array list.
-                for (int i = 0; i < board.length; i++) if (board[i] == TIC_TAC_TOE_EMPTY_SPACE) emptyBoxIndexes.add(i);
+                for (int i = 0; i < board.length; i++) if (board[i] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) emptyBoxIndexes.add(i);
                 // Select a random index of the board that is empty. https://www.baeldung.com/java-generating-random-numbers-in-range
                 int randomIndexEmptyBox = (int) (Math.random() * emptyBoxIndexes.size());
                 int randomBoardIndex = emptyBoxIndexes.get(randomIndexEmptyBox);
@@ -278,7 +288,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
     // Method of TicTacToeGame to reset the board.
     private void resetBoard() {
         // Fill the array board with zeros to 'empty' it.
-        Arrays.fill(board, TIC_TAC_TOE_EMPTY_SPACE);
+        Arrays.fill(board, TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER);
         // Change the background of the buttons to black.
         topLeft.setBackgroundResource(R.color.black);
         topMiddle.setBackgroundResource(R.color.black);
@@ -296,21 +306,21 @@ public class TicTacToeActivity2 extends AppCompatActivity {
     // Method to check if there is a winner.
     private int checkWinner() {
         // Win from the top horizontal.
-        if (board[0] == board[1] && board[1] == board[2] && board[0] != TIC_TAC_TOE_EMPTY_SPACE) return board[0];
+        if (board[0] == board[1] && board[1] == board[2] && board[0] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[0];
         // Win from the middle horizontal.
-        if (board[3] == board[4] && board[4] == board[5] && board[3] != TIC_TAC_TOE_EMPTY_SPACE) return board[3];
+        if (board[3] == board[4] && board[4] == board[5] && board[3] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[3];
         // Win from the bottom horizontal.
-        if (board[6] == board[7] && board[7] == board[8] && board[6] != TIC_TAC_TOE_EMPTY_SPACE) return board[6];
+        if (board[6] == board[7] && board[7] == board[8] && board[6] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[6];
         // Win from the left vertical.
-        if (board[0] == board[3] && board[3] == board[6] && board[0] != TIC_TAC_TOE_EMPTY_SPACE) return board[0];
+        if (board[0] == board[3] && board[3] == board[6] && board[0] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[0];
         // Win from the middle vertical.
-        if (board[1] == board[4] && board[4] == board[7] && board[1] != TIC_TAC_TOE_EMPTY_SPACE) return board[1];
+        if (board[1] == board[4] && board[4] == board[7] && board[1] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[1];
         // Win from the right vertical.
-        if (board[2] == board[5] && board[5] == board[8] && board[2] != TIC_TAC_TOE_EMPTY_SPACE) return board[2];
+        if (board[2] == board[5] && board[5] == board[8] && board[2] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[2];
         // Win from the top left to bottom right diagonal.
-        if (board[0] == board[4] && board[4] == board[8] && board[0] != TIC_TAC_TOE_EMPTY_SPACE) return board[0];
+        if (board[0] == board[4] && board[4] == board[8] && board[0] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[0];
         // Win from the bottom left to top right diagonal.
-        if (board[6] == board[4] && board[4] == board[2] && board[6] != TIC_TAC_TOE_EMPTY_SPACE) return board[6];
+        if (board[6] == board[4] && board[4] == board[2] && board[6] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[6];
 
         // Return that there is no winner (0).
         return 0;
@@ -358,19 +368,35 @@ public class TicTacToeActivity2 extends AppCompatActivity {
     // Method to only enable the buttons that were not pressed.
     private void enableUnusedBoardInput() {
         // If there is an empty space in the board array, we enable the button for that corresponding index.
-        if (board[0] == TIC_TAC_TOE_EMPTY_SPACE) topLeft.setEnabled(true);
-        if (board[1] == TIC_TAC_TOE_EMPTY_SPACE) topMiddle.setEnabled(true);
-        if (board[2] == TIC_TAC_TOE_EMPTY_SPACE) topRight.setEnabled(true);
-        if (board[3] == TIC_TAC_TOE_EMPTY_SPACE) middleLeft.setEnabled(true);
-        if (board[4] == TIC_TAC_TOE_EMPTY_SPACE) middle.setEnabled(true);
-        if (board[5] == TIC_TAC_TOE_EMPTY_SPACE) middleRight.setEnabled(true);
-        if (board[6] == TIC_TAC_TOE_EMPTY_SPACE) bottomLeft.setEnabled(true);
-        if (board[7] == TIC_TAC_TOE_EMPTY_SPACE) bottomMiddle.setEnabled(true);
-        if (board[8] == TIC_TAC_TOE_EMPTY_SPACE) bottomRight.setEnabled(true);
+        if (board[0] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) topLeft.setEnabled(true);
+        if (board[1] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) topMiddle.setEnabled(true);
+        if (board[2] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) topRight.setEnabled(true);
+        if (board[3] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) middleLeft.setEnabled(true);
+        if (board[4] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) middle.setEnabled(true);
+        if (board[5] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) middleRight.setEnabled(true);
+        if (board[6] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) bottomLeft.setEnabled(true);
+        if (board[7] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) bottomMiddle.setEnabled(true);
+        if (board[8] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) bottomRight.setEnabled(true);
     }
 
+    // Method to update the score of the game. Passes in the integer value of player type. See constants
+    // above such as TIC_TAC_TOE_X and TIC_TAC_TOE_O.
+    private void updateWinnerScore(int winner) {
+        // Variable to store the reference view that contains the score of the winner of the match.
+        TextView scoreView;
 
+        // If the winner is player o. Get the reference to the view of the o player.
+        if (winner == TIC_TAC_TOE_O) scoreView = (TextView) findViewById(R.id.tic_tac_toe_o_score);
 
+        // If the winner is player x. Get the reference to the view of the x player.
+        else scoreView = (TextView) findViewById(R.id.tic_tac_toe_x_score);
 
+        // Parse the text of view into an integer.
+        int currScore = Integer.parseInt(scoreView.getText().toString());
+        // Update the score by one since they won.
+        currScore += 1;
+        // Update the TextView.
+        scoreView.setText(String.valueOf(currScore));
+    }
 
 }
