@@ -35,6 +35,9 @@ public class TicTacToeActivity2 extends AppCompatActivity {
     // Stores the player type of the player and computer.
     private int playerType, computerType;
 
+    // Handler object to handle the user input. There will be a delay between user inputs and computer,
+    // as well between winning boards and game reset.
+    private final Handler delayHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +101,11 @@ public class TicTacToeActivity2 extends AppCompatActivity {
             }
         });
 
+
         // OnClickListener for TicTacToeGame to handle the tic-tac-toe buttons user input.
         View.OnClickListener chooseBox = new View.OnClickListener() {
             // Button that will store the reference to the button that the user tapped.
             private ImageButton playerButton, computerButton;
-
-            // Handler object to handle the user input. There will be a delay between when the
-            // user taps a tic-tac-toe box and the computer making their move.
-            private final Handler delayHandler = new Handler();
 
             // Runnable object that has the functionality of setting the background resource of a computer's chosen
             // tic-tac-toe box to X or O. This function will be delayed by some seconds after the user makes their move.
@@ -118,17 +118,38 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                     if (computerType == TIC_TAC_TOE_X) computerButton.setBackgroundResource(R.drawable.tic_tac_toe_x);
                     else if (computerType == TIC_TAC_TOE_O) computerButton.setBackgroundResource(R.drawable.tic_tac_toe_o);
 
-                    // Enabled the board buttons that are still in play.
-                    enableUnusedBoardInput();
-
                     // Check if there is a winner by invoking checkWinner. If there is a winner, checkWinner
                     // will not return 0.
                     if (checkWinner() != 0) {
                         // Update the winner's score. Check winner returns the int value of player type. 0 if no winner.
                         updateWinnerScore(checkWinner());
-                        // Reset the board.
-                        resetBoard();
+                        // Reset the board. All board buttons will be enabled.
+                        delayHandler.postDelayed(delayedReset, 1000);
+                        return;
                     }
+
+                    // If the board is full, reset the board and terminate the onClick method.
+                    if (isFull()) {
+                        // We delay the reset of the board so that the user has time to see what the full board looks like.
+                        delayHandler.postDelayed(delayedReset, 1000);
+                        return;
+                    }
+
+                    // Enable the board buttons that are still in play.
+                    enableUnusedBoardInput();
+                }
+            };
+
+            // Runnable object that has the functionality of resetting the board. Will be passed into
+            // runnable for a delayed reset. If the computer is X, it makes its move after the reset.
+            private final Runnable delayedReset = new Runnable() {
+                @Override
+                public void run() {
+                    // Invoke method to reset the board.
+                    resetBoard();
+                    // Everytime we reset the board, we check if the computer should go first. If it does
+                    // we invoke computerFirstMove.
+                    if (computerType == TIC_TAC_TOE_X) computerFirstMove();
                 }
             };
 
@@ -196,12 +217,9 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                     playerButton = bottomRight;
                 }
 
-
-                // Method for player to draw on the board.
-                // delayHandler.postDelayed(playerMove, 0);
-                // Depending on whether the player chose their play type as X or O, we change
-                // the background of the button.
                 // TODO: Plan on adding animation and clean up.
+                // There is no delay when the user taps on the board. The users move will be displayed immediately.
+                // The delay happens after the user's move appears.
                 if (playerType == TIC_TAC_TOE_X) {
                     playerButton.setBackgroundResource(R.drawable.tic_tac_toe_x);
                 } else if (playerType == TIC_TAC_TOE_O) {
@@ -212,26 +230,23 @@ public class TicTacToeActivity2 extends AppCompatActivity {
                 if (checkWinner() != 0) {
                     // Update the winner's score. Check winner returns the int value of player type. 0 if no winner.
                     updateWinnerScore(checkWinner());
-                    resetBoard();
+                    // We delay the reset of the board so that the user has time to see what the winning board looks like.
+                    delayHandler.postDelayed(delayedReset, 1000);
                     return;
                 }
 
                 // If the board is full, reset the board and terminate the onClick method.
                 if (isFull()) {
-                    resetBoard();
+                    // We delay the reset of the board so that the user has time to see what the full board looks like.
+                    delayHandler.postDelayed(delayedReset, 1000);
                     return;
                 }
 
 
-                // TODO: Needs cleanup. We will most likely use this method to handle the delay of computer move.
+                // TODO: Needs cleanup.
                 // Computer then makes its move.
-                // ArrayList to hold the empty positions from the board.
-                ArrayList<Integer> emptyBoxIndexes = new ArrayList<Integer>();
-                // Iterate through the array board. If the space of the board is empty, add the index to the array list.
-                for (int i = 0; i < board.length; i++) if (board[i] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) emptyBoxIndexes.add(i);
-                // Select a random index of the board that is empty. https://www.baeldung.com/java-generating-random-numbers-in-range
-                int randomIndexEmptyBox = (int) (Math.random() * emptyBoxIndexes.size());
-                int randomBoardIndex = emptyBoxIndexes.get(randomIndexEmptyBox);
+                // Invoke getRandomIndex() to get a random available index.
+                int randomBoardIndex = getRandomIndex();
 
                 // Update the array board.
                 board[randomBoardIndex] = computerType;
@@ -261,7 +276,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
 
 
                 // TODO: https://www.w3docs.com/snippets/java/how-to-call-a-method-after-a-delay-in-android.html#:~:text=To%20call%20a%20method%20after%20a%20delay%20in%20Android%2C%20you,Runnable%20after%20the%20specified%20delay.
-                // Method for computer to draw on the board. This method will also enable board buttons.
+                // Method for computer to draw on the board. This method will also enable board buttons after computer draws.
                 delayHandler.postDelayed(computerMove, 1000);
 
             }
@@ -278,6 +293,10 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         bottomLeft.setOnClickListener(chooseBox);
         bottomMiddle.setOnClickListener(chooseBox);
         bottomRight.setOnClickListener(chooseBox);
+
+        // During the initialization of the board, if the computer is X, it goes first. Invoke computerFirstMove.
+        if (computerType == TIC_TAC_TOE_X) computerFirstMove();
+
     }
 
     // Method of TicTacToeGame to set the app's view to the tic-tac-toe board.
@@ -303,7 +322,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         enableAllBoardInput();
     }
 
-    // Method to check if there is a winner.
+    // Method to check if there is a winner. Returns the integer representation of player type. See constants above.
     private int checkWinner() {
         // Win from the top horizontal.
         if (board[0] == board[1] && board[1] == board[2] && board[0] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[0];
@@ -322,7 +341,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         // Win from the bottom left to top right diagonal.
         if (board[6] == board[4] && board[4] == board[2] && board[6] != TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) return board[6];
 
-        // Return that there is no winner (0).
+        // Return that there is no winner (TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER).
         return 0;
     }
 
@@ -339,7 +358,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         return true;
     }
 
-    // Method to disable user input on the board.
+    // Method to disable user input on the board. No buttons are in play.
     private void disableAllBoardInput() {
         topLeft.setEnabled(false);
         topMiddle.setEnabled(false);
@@ -352,7 +371,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         bottomRight.setEnabled(false);
     }
 
-    // Method to enable user input on the board.
+    // Method to enable user input on the board. All boxes are now in play.
     private void enableAllBoardInput() {
         topLeft.setEnabled(true);
         topMiddle.setEnabled(true);
@@ -365,7 +384,7 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         bottomRight.setEnabled(true);
     }
 
-    // Method to only enable the buttons that were not pressed.
+    // Method to only enable the buttons that were not pressed. Enable boxes that are still in play.
     private void enableUnusedBoardInput() {
         // If there is an empty space in the board array, we enable the button for that corresponding index.
         if (board[0] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) topLeft.setEnabled(true);
@@ -399,4 +418,50 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         scoreView.setText(String.valueOf(currScore));
     }
 
+    // Method to get the random index of the board that is not used.
+    private int getRandomIndex() {
+        // ArrayList to hold the empty positions from the board.
+        ArrayList<Integer> emptyBoxIndexes = new ArrayList<Integer>();
+        // Iterate through the array board. If the space of the board is empty, add the index to the array list.
+        for (int i = 0; i < board.length; i++) if (board[i] == TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER) emptyBoxIndexes.add(i);
+        // Select a random index of the board that is empty. https://www.baeldung.com/java-generating-random-numbers-in-range
+        int randomIndexEmptyBox = (int) (Math.random() * emptyBoxIndexes.size());
+        // Return the random index.
+        return emptyBoxIndexes.get(randomIndexEmptyBox);
+    }
+
+    // Method to run when the computer is the first move.
+    private void computerFirstMove() {
+        // Disable all board input to prevent the user from putting anything in first.
+        disableAllBoardInput();
+
+        // We will show the empty board for a second, then the computer will make its move. We do
+        // this by creating a Runnable object that will pass into a handler to delay the move.
+        Runnable computerFirstMove = new Runnable() {
+            // Method for the computer to make the first move of the game. Draws on the board.
+            @Override
+            public void run() {
+                // Get random board position by invoking getRandomIndex().
+                int randomBoardIndex = getRandomIndex();
+                // Whatever the position was, draw on the position.
+                if (randomBoardIndex == 0) topLeft.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 1) topMiddle.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 2) topRight.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 3) middleLeft.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 4) middle.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 5) middleRight.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 6) bottomLeft.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 7) bottomMiddle.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                if (randomBoardIndex == 8) bottomRight.setBackgroundResource(R.drawable.tic_tac_toe_x);
+                // Update the array board.
+                board[randomBoardIndex] = computerType;
+                // Enable all unused buttons.
+                enableUnusedBoardInput();
+            }
+        };
+
+        // We invoke postDelayed from our handler and pass in our created runnable so that there
+        // is a delay between the creation of the board and when the computer draws on the board.
+        delayHandler.postDelayed(computerFirstMove, 1000);
+    }
 }
