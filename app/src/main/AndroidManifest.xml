@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".TicTacToeActivity2"
+            android:name=".TicTacToeActivity3"
             android:exported="true"
             android:label="@string/title_tic_tac_toe"
             android:theme="@style/CleanBlackWhite">

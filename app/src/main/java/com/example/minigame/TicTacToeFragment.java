@@ -1,110 +1,115 @@
 package com.example.minigame;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.os.Handler;
 
-public class TicTacToeActivity2 extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class TicTacToeFragment extends Fragment {
+
+    // Will store a reference to the TicTacToeActivity context as a boardToggle object.
+    private boardToggle toggleBoardActivity;
+
+    // TicTacToeActivity will implement the functionality of toggling the board.
+    public interface boardToggle {
+        void toggleBoard(boolean visible);
+    }
+
     // Constant indicating empty space on board.
     static final int TIC_TAC_TOE_EMPTY_SPACE_NO_WINNER = 0;
     // Constants indicating player.
     static final int TIC_TAC_TOE_X = 1;
     static final int TIC_TAC_TOE_O = 2;
 
+    // Stores the playerType and computerType.
+    private int playerType, computerType;
+
     // Stores the button of the tic-tac-toe board.
     private ImageButton topLeft, topMiddle, topRight, middleLeft, middle, middleRight, bottomLeft,
             bottomMiddle, bottomRight;
-
-    // Stores the button of choosing X or O.
-    private Button buttonChooseX, buttonChooseO;
-
-    // Test button to reset the board.
-    private Button resetBoardButtonTest;
 
     // Stores the board of the tic-tac-toe game. From left to right, top to bottom, the board boxes
     // where the Xs and Os will go will be 0 indexed. For instance,  the top left position will be
     // at index 0 and the bottom right position will be at index 8.
     private int[] board;
 
-    // Stores the player type of the player and computer.
-    private int playerType, computerType;
-
     // Handler object to handle the user input. There will be a delay between user inputs and computer,
     // as well between winning boards and game reset.
     private final Handler delayHandler = new Handler();
 
-    public TicTacToeActivity2() {
-        super(R.layout.layout_tic_tac_toe);
+    // Views that represent the score of X and O.
+    View xScore, oScore;
+
+    // Button to test the toggle of the board.
+    Button exitButton;
+
+    // The fragment will inflate the board's xml.
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.layout_tic_tac_toe_board, container, false);
     }
 
+    // When this fragment attaches to the activity the fragment is running in.
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // We create two buttons for the user to choose what they want to play, X or O.
-        buttonChooseX = (Button) findViewById(R.id.tic_tac_toe_button_x);
-        buttonChooseO = (Button) findViewById(R.id.tic_tac_toe_button_o);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // Check if the activity that hosts this fragment has implemented the boardToggle interface.
+        if (context instanceof boardToggle) {
+            // This fragment will retain a reference to the activity as an instance of boardToggle.
+            toggleBoardActivity = (boardToggle) context;
+        }
+        else {
+            throw new RuntimeException();
+        }
+    }
 
-        // Handles the buttons that will determine whether the user plays X or O.
-        View.OnClickListener playerTypeChoose = new View.OnClickListener() {
+    // When the the view is created for the fragment.
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Instantiate board buttons with their correct button.
+        topLeft = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_top_left);
+        topMiddle = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_top_middle);
+        topRight = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_top_right);
+        middleLeft = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_middle_left);
+        middle = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_middle);
+        middleRight = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_middle_right);
+        bottomLeft = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_bottom_left);
+        bottomMiddle = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_bottom_middle);
+        bottomRight = (ImageButton) view.findViewById(R.id.tic_tac_toe_button_bottom_right);
+
+        // Instantiate the exit button.
+        exitButton = view.findViewById(R.id.tic_tac_toe_button_exit);
+
+        // Exit button listener.
+        exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.tic_tac_toe_button_x) {
-                    // Set the player and computer type.
-                    playerType = TIC_TAC_TOE_X;
-                    computerType = TIC_TAC_TOE_O;
-                    // User plays tic-tac-toe as X. Computer plays as O.
-                    playTicTacToe();
-                } else if (v.getId() == R.id.tic_tac_toe_button_o) {
-                    // Set the player and computer type.
-                    playerType = TIC_TAC_TOE_O;
-                    computerType = TIC_TAC_TOE_X;
-                    // User plays tic-tac-toe as O. Computer plays as X.
-                    playTicTacToe();
-                }
+                toggleBoardActivity.toggleBoard(true);
             }
-        };
-
-        // Set pass in the button handler to the buttons.
-        buttonChooseX.setOnClickListener(playerTypeChoose);
-        buttonChooseO.setOnClickListener(playerTypeChoose);
-    }
-
-    // Method to handle the gameplay of tic-tac-toe.
-    private void playTicTacToe() {
-        // Display the board for the user by changing the layout.
-        displayBoard();
-
-        // Instantiate buttons with their correct button.
-        topLeft = (ImageButton) findViewById(R.id.tic_tac_toe_button_top_left);
-        topMiddle = (ImageButton) findViewById(R.id.tic_tac_toe_button_top_middle);
-        topRight = (ImageButton) findViewById(R.id.tic_tac_toe_button_top_right);
-        middleLeft = (ImageButton) findViewById(R.id.tic_tac_toe_button_middle_left);
-        middle = (ImageButton) findViewById(R.id.tic_tac_toe_button_middle);
-        middleRight = (ImageButton) findViewById(R.id.tic_tac_toe_button_middle_right);
-        bottomLeft = (ImageButton) findViewById(R.id.tic_tac_toe_button_bottom_left);
-        bottomMiddle = (ImageButton) findViewById(R.id.tic_tac_toe_button_bottom_middle);
-        bottomRight = (ImageButton) findViewById(R.id.tic_tac_toe_button_bottom_right);
+        });
 
         // Instantiate the game board.
         board = new int[9];
 
-        // Test button to reset board with onClickListener.
-        resetBoardButtonTest = (Button) findViewById(R.id.tic_tac_toe_button_exit);
-        resetBoardButtonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetBoard();
-            }
-        });
+        // Store references to the views that show x's and o's score.
+        xScore = view.findViewById(R.id.tic_tac_toe_x_score);
+        oScore = view.findViewById(R.id.tic_tac_toe_o_score);
 
         // OnClickListener for TicTacToeGame to handle the tic-tac-toe buttons user input.
         View.OnClickListener chooseBox = new View.OnClickListener() {
@@ -303,11 +308,6 @@ public class TicTacToeActivity2 extends AppCompatActivity {
 
     }
 
-    // Method of TicTacToeGame to set the app's view to the tic-tac-toe board.
-    private void displayBoard() {
-        setContentView(R.layout.layout_tic_tac_toe_board);
-    }
-
     // Method of TicTacToeGame to reset the board.
     private void resetBoard() {
         // Fill the array board with zeros to 'empty' it.
@@ -409,10 +409,10 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         TextView scoreView;
 
         // If the winner is player o. Get the reference to the view of the o player.
-        if (winner == TIC_TAC_TOE_O) scoreView = (TextView) findViewById(R.id.tic_tac_toe_o_score);
+        if (winner == TIC_TAC_TOE_O) scoreView = (TextView) oScore;
 
-        // If the winner is player x. Get the reference to the view of the x player.
-        else scoreView = (TextView) findViewById(R.id.tic_tac_toe_x_score);
+            // If the winner is player x. Get the reference to the view of the x player.
+        else scoreView = (TextView) xScore;
 
         // Parse the text of view into an integer.
         int currScore = Integer.parseInt(scoreView.getText().toString());
@@ -467,6 +467,12 @@ public class TicTacToeActivity2 extends AppCompatActivity {
         // We invoke postDelayed from our handler and pass in our created runnable so that there
         // is a delay between the creation of the board and when the computer draws on the board.
         delayHandler.postDelayed(computerFirstMove, 1000);
+    }
+
+    // Method to set the buttons.
+    public void setPlayerTypes(int player, int computer) {
+        playerType = player;
+        computerType = computer;
     }
 
 }

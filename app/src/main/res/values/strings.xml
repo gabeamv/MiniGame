@@ -17,4 +17,6 @@
     <string name="tic_tac_toe_bottom_right">Bottom-right box.</string>
     <string name="reset_board_test">reset_board_test</string>
     <string name="string_0">0</string>
+    <string name="x_o">X / O</string>
+    <string name="exit">Exit</string>
 </resources>

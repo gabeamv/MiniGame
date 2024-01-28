@@ -1,6 +1,5 @@
 package com.example.minigame;
 
-import android.media.Image;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -97,7 +96,7 @@ public class TicTacToeActivity extends AppCompatActivity {
             this.computerType = computerType;
 
             // Test to reset board.
-            resetBoardButtonTest = (Button) findViewById(R.id.reset_board_button_test);
+            resetBoardButtonTest = (Button) findViewById(R.id.tic_tac_toe_button_exit);
             resetBoardButtonTest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

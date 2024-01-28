@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- @+id/tic_tac_toe_button_x, @+id/tic_tac_toe_button_o -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+
+    <Button
+        android:id="@+id/tic_tac_toe_button_x"
+        android:layout_width="175dp"
+        android:layout_height="100dp"
+        android:text="@string/x"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tic_tac_toe_button_o"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <Button
+        android:id="@+id/tic_tac_toe_button_o"
+        android:layout_width="175dp"
+        android:layout_height="100dp"
+        android:text="@string/o"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tic_tac_toe_button_x"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <FrameLayout
+        android:id="@+id/tic_tac_toe_fragment_container_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center">
+        android:layout_height="match_parent" />
 
-            <Button
-                android:layout_width="175dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="12dp"
-                android:text="@string/x"
-                android:textSize="60sp"
-                android:id="@+id/tic_tac_toe_button_x"/>
-
-            <Button
-                android:layout_width="175dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/o"
-                android:textSize="60sp"
-                android:id="@+id/tic_tac_toe_button_o"/>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

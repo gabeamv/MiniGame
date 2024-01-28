@@ -21,7 +21,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonTicTacToe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Create an intent to go to the Tic-tac-toe activity, then start it.
-                Intent startTicTacToe = new Intent(HomeActivity.this, TicTacToeActivity2.class);
+                Intent startTicTacToe = new Intent(HomeActivity.this, TicTacToeActivity3.class);
                 startActivity(startTicTacToe);
                 // No animation when changing activities.
                 overridePendingTransition(0, 0);
