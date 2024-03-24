@@ -51,6 +51,9 @@ android {
 
 dependencies {
 
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+
     // Fragment dependencies
     val fragment_version = "1.6.2"
     // Java language implementation

@@ -16,6 +16,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // The layout will be the home page.
         setContentView(R.layout.layout_home);
+
         // We create a button to start the Tic-tac-toe activity.
         Button buttonTicTacToe = (Button) findViewById(R.id.home_tic_tac_toe_button);
         buttonTicTacToe.setOnClickListener(new View.OnClickListener() {
@@ -23,6 +24,18 @@ public class HomeActivity extends AppCompatActivity {
                 // Create an intent to go to the Tic-tac-toe activity, then start it.
                 Intent startTicTacToe = new Intent(HomeActivity.this, TicTacToeActivity3.class);
                 startActivity(startTicTacToe);
+                // No animation when changing activities.
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        // We create a button to start the Snake activity.
+        Button buttonSnake = (Button) findViewById(R.id.snake_button);
+        buttonSnake.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Create an intent to go to the Snake activity, then start it.
+                Intent startSnake = new Intent(HomeActivity.this, SnakeActivity.class);
+                startActivity(startSnake);
                 // No animation when changing activities.
                 overridePendingTransition(0, 0);
             }
