@@ -6,15 +6,57 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/snake_move_right"
+        android:id="@+id/snake_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="88dp"
-        android:text="Right"
+        android:text="Start"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.89" />
+
+    <Button
+        android:id="@+id/snake_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Left"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/snake_down"
+        app:layout_constraintEnd_toStartOf="@+id/snake_start"
+        app:layout_constraintTop_toBottomOf="@+id/snake_up" />
+
+    <Button
+        android:id="@+id/snake_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Right"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/snake_down"
+        app:layout_constraintStart_toEndOf="@+id/snake_start"
+        app:layout_constraintTop_toBottomOf="@+id/snake_up" />
+
+    <Button
+        android:id="@+id/snake_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Down"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toStartOf="@+id/snake_right"
+        app:layout_constraintStart_toEndOf="@+id/snake_left"
+        app:layout_constraintTop_toBottomOf="@+id/snake_start" />
+
+    <Button
+        android:id="@+id/snake_up"
+        android:layout_width="87dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="1dp"
+        android:text="Up"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/snake_start"
+        app:layout_constraintEnd_toStartOf="@+id/snake_right"
+        app:layout_constraintStart_toEndOf="@+id/snake_left" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
