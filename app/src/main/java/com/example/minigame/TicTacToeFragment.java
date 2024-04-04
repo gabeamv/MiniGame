@@ -411,7 +411,7 @@ public class TicTacToeFragment extends Fragment {
         // If the winner is player o. Get the reference to the view of the o player.
         if (winner == TIC_TAC_TOE_O) scoreView = (TextView) oScore;
 
-            // If the winner is player x. Get the reference to the view of the x player.
+        // If the winner is player x. Get the reference to the view of the x player.
         else scoreView = (TextView) xScore;
 
         // Parse the text of view into an integer.
